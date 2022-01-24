@@ -1,0 +1,35 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: letsencrypt
+spec:
+  acme:
+    email: bird@kknd0.cn
+    server: https://acme-v02.api.letsencrypt.org/directory
+    preferredChain: 'ISRG Root X1'
+    privateKeySecretRef:
+      name: kknd0-corp
+    solvers:
+      - http01:
+          ingress:
+            class: nginx
+            serviceType: ClusterIP
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: kknd0
+spec:
+  secretName: kknd0
+  subject:
+    organizations:
+      - kknd0
+  dnsNames:
+    - kknd0.cn
+    - www.kknd0.cn
+    - db.kknd0.cn
+    - tv.kknd0.cn
+    - landing.kknd0.cn
+  issuerRef:
+    name: letsencrypt
+    kind: Issuer

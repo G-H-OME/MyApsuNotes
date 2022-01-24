@@ -1,0 +1,31 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: letsencrypt
+spec:
+  acme:
+    email: psuouo@gmail.com
+    server: https://acme-v02.api.letsencrypt.org/directory
+    preferredChain: 'ISRG Root X1'
+    privateKeySecretRef:
+      name: momoda
+    solvers:
+      - http01:
+          ingress:
+            class: nginx
+            serviceType: ClusterIP
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: momoda
+spec:
+  secretName: momo
+  subject:
+    organizations:
+      - momoda
+  dnsNames:
+    - abba.kknd0.cn
+  issuerRef:
+    name: letsencrypt
+    kind: Issuer
