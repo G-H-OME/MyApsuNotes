@@ -41,7 +41,7 @@ display:-webkit-box; //作为弹性伸缩盒子模型显示。
 
 ## 3.==div不生效onBlur( )==
 
-默认情况下的话，div是不生效onBlur的，可以在div中加入tabIndex=-1 即可生效。
+默认情况下的话，div是不生效onBlur(失焦事件)的，可以在div中加入tabIndex=-1 即可生效。
 
 
 
@@ -79,11 +79,12 @@ flex-wrap:wrap;
 ## 6.回车事件
 
 ```typescript
-onKeyDown={(e)=>{
+<input onKeyDown={(e)=>{
     if(e.key==='Enter'){
         Function()
     }
-}}
+}}>
+</input>
 ```
 
 
@@ -121,11 +122,37 @@ const copyText = async(text:string)=>{
 }
 ```
 
+点击‘复制’，将想要的数据写入剪贴板
+
+```typescript
+<button onClick={()=>{
+    navigator.clipboard.writeText('写入剪贴板的数据')
+    	.then(()=>{alert('已复制到剪贴板')})
+    	.catch(err=>{ alert(err) })
+}}>
+```
 
 
 
+## 8.将时间戳转化为时间
 
+```typescript
 
+const timestampToTime = ( timestamp: string | number | Date ) => {
+    const date = new Date( timestamp )
+    //若时间戳是10位的话，上面需要*1000，否则会跑到1970年 new Date(timesstamp * 1000)
+    const Y = date.getFullYear() + '-'
+    const M = ( date.getMonth() + 1 < 10 ? '0' + ( date.getMonth() + 1 ) : date.getMonth() + 1 ) + '-'
+    const D = date.getDate() + ' '
+    const h = date.getHours() + ':'
+    const m = date.getMinutes() + ':'
+    const s = date.getSeconds()
+    return Y + M + D + h + m + s;
+  }
+const Time = timestampToTime( time )
+//但是！这里 如果传入的time是字符串的话，得到的全是Nan 因此需要将其进行转换 
+//timestampToTime( parseInt( time ) )
+```
 
 
 
