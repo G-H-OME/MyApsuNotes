@@ -156,9 +156,275 @@ const Time = timestampToTime( time )
 
 
 
+## 9.摇摇晃晃框
+
+```typescript
+import { useRouter } from "next/router"
+import React, { useState } from "react"
+import { animated, config, useSpring } from "react-spring"
+import styled from "styled-components"
+import {
+  usePasswordLoginMutation,
+  usePhoneLoginMutation,
+} from "../../src/generated/graphql"
+import { useGlobalContext } from "../../utils/context/globalContext"
+import { isPhone } from "../../utils/isPhone_isToken"
+import { PasswordToken } from "./PasswordToken"
+
+const RegisterLogin: React.FC<RegisterLoginProps> = ({
+  password,
+  phone,
+  phoneToken,
+  setPassword,
+  setPhone,
+  setPhoneToken,
+  setStep,
+}) => {
+  const [agree, setAgree] = useState(true)
+  const { errorsToNotices } = useGlobalContext()
+  const [props, set] = useSpring(() => ({
+    xys: [0, 0, 1],
+    config: config.default,
+  }))
+
+  return (
+    <All
+      onMouseMove={({ clientX: x, clientY: y }) => set({ xys: calc(x, y) })}
+      onMouseLeave={() => set({ xys: [0, 0, 1] })}
+      style={{
+        transform: props.xys.to(trans),
+      }}
+    >
+
+    </All>
+  )
+}
+export default RegisterLogin
+
+interface RegisterLoginProps {
+  setStep: React.Dispatch<React.SetStateAction<number>>
+  phone: string
+  setPhone: React.Dispatch<React.SetStateAction<string>>
+  password: string
+  setPassword: React.Dispatch<React.SetStateAction<string>>
+  phoneToken: string
+  setPhoneToken: React.Dispatch<React.SetStateAction<string>>
+}
+interface topProps {
+  top: string
+}
+interface bkProps {
+  background: string
+  border: string
+}
+
+const calc = (x: number, y: number) => [
+  -(y - window.innerHeight / 2) / 40,
+  (x - window.innerWidth / 2) / 40,
+  1,
+]
+const trans = (x: number, y: number, s: number) =>
+  `perspective(600px) rotateX(${x}deg) rotateY(${y}deg) scale(${s})`
+
+const All = styled(animated.div)`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 862px;
+  height: 646px;
+  border-radius: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(25px);
+  transform-style: preserve-3d;
+  transition: all 0.5s ease-out;
+  &:hover {
+    box-shadow: 0 50px 80px rgba(0, 0, 0, 0.2);
+  }
+`
+const H1 = styled.h1`
+  margin-top: 144px;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 32px;
+  line-height: 45px;
+  color: #ffffff;
+`
+export const Input = styled.input<topProps>`
+  margin-top: ${({ top }) => top};
+  width: 400px;
+  height: 40px;
+  background: #ffffff;
+  border: 1px solid #ffffff;
+  box-sizing: border-box;
+  border-radius: 4px;
+  padding-left: 8px;
+  outline: none;
+`
+
+const Accept = styled.div<topProps>`
+  display: flex;
+  align-items: center;
+  column-gap: 8px;
+  margin-top: ${({ top }) => top};
+  width: 400px;
+  height: 17px;
+  font-size: 12px;
+  line-height: 17px;
+  color: #ffffff;
+  p {
+    color: #2e32f9;
+  }
+`
+const Choice = styled.div<bkProps>`
+  cursor: pointer;
+  background: ${({ background }) => background};
+  z-index: 2;
+  width: 14px;
+  height: 14px;
+  border: ${({ border }) => border};
+  box-sizing: border-box;
+  border-radius: 2px;
+  transition: all 0.1s ease-out;
+  &:active {
+    border: 7px solid #bbbbbb;
+  }
+`
+const Btn = styled.div`
+  margin-top: 64px;
+  width: 200px;
+  height: 48px;
+  background: #ffffff;
+  border-radius: 4px;
+  display: flex;
+  cursor: pointer;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.5s ease-out;
+  p {
+    font-size: 20px;
+    color: #2e32f9;
+  }
+  &:hover {
+    box-shadow: 4px 4px 6px rgba(0, 0, 0, 0.25);
+  }
+  &:active {
+    background: #9c9c9c;
+    transition: all 0.1s ease-out;
+  }
+`
+const Way = styled.p`
+  cursor: pointer;
+  margin-top: 16px;
+  font-size: 14px;
+  color: #ffffff;
+`
+const Alert = styled.p`
+  position: absolute;
+  color: #ec3710;
+  font-size: 12px;
+  right: 8px;
+  bottom: 9px;
+  line-height: 22px;
+  transition: all 0.3s ease-in-out;
+`
+
+```
 
 
 
+## 10.获取当前和24小时前的时间戳
+
+```typescript
+const nowTime = new Date().getTime().toString()//当前时间戳
+const beforeTime = (new Date().getTime() - 60*60*1000*24).toString()//24小时前时间戳
+                                           //由1毫秒算到24小时
+```
 
 
 
+## 11.可拉伸表格
+
+首先通常的table格式
+
+```typescript
+<table>
+	<thead>
+    	<tr>
+    		<th>列首</th>
+    	</tr>
+    </thead> 
+	<tbody>
+    	<tr>
+    		<td>内容</td>
+    	</tr>
+    </tbody>
+</table>
+```
+
+写一个<TH>组件，其中主要功能为：读取鼠标的横坐标，拉动到的位置。这样就可以算出拉了多少距离，再与原宽度相加减就可以得到新的宽度，由于th改变也会随之改变td，因此做到一个可拉伸的表格。
+
+主要用的  ==拖拽事件==
+
+```typescript
+import React, { useState } from "react"
+import styled from "styled-components"
+
+export const TH: React.FC<THProps> = ({ title, index }) => {
+  const [w, setW] = useState(title.length > 4 ? 200 : 100)
+  return (
+    <Th width={w}>
+      {title}
+      <SP
+        id={`sp${index}`}
+        draggable
+        onDragEnd={(e) => {
+          const Span = document.getElementById(`sp${index}`)
+          const Left = Span.getBoundingClientRect().left /* 拿到span的x坐标 */
+          /* e.clientX：鼠标到达的x坐标 Left会比正常是大1，所以减1 */
+          setW(w + e.clientX - (Left - 1))
+        }}
+      >
+        &nbsp;
+      </SP>
+    </Th>
+  )
+}
+interface THProps {
+  title: string
+  index: number
+}
+
+const Th = styled.th<{ width?: number }>`
+  position: relative;
+  border-right: 1px solid #ccc;
+  padding: 2px;
+  width: ${({ width }) => (width ? width : "100px")};
+  user-select: none;
+  color: #333;
+  font-size: 13px;
+`
+const SP = styled.span`
+  position: absolute;
+  cursor: ew-resize;
+  height: 100%;
+  right: 0px;
+  top: 0px;
+  width: 5px;
+  &:active {
+    width: 3px;
+    background-color: #464545;
+    height: 880px;
+    box-sizing: border-box;
+  }
+`
+export const TD = styled.td`
+  border: 1px solid #ccc;
+  width: 100px;
+`
+```
+
+只设置表格的右边框，并在右边框处放置一个占位span，主要通过拉动span，来确定新的位置。
+
+## 
