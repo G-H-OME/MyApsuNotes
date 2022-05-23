@@ -427,4 +427,40 @@ export const TD = styled.td`
 
 只设置表格的右边框，并在右边框处放置一个占位span，主要通过拉动span，来确定新的位置。
 
-## 
+
+
+## 12.将时间戳格式化（“YYYY-MM-DD HH:mm:ss”）
+
+```typescript
+export const timeStampFormat = (timestamp: string) => {
+  let timeStamp: number
+  if (timestamp.length === 13) {
+    timeStamp = new Date(parseInt(timestamp)).getTime()
+  } else {
+    timeStamp = new Date(timestamp).getTime()
+  }
+  const date = new Date(timeStamp)
+  const Y = date.getFullYear() + "-"
+  const M = (date.getMonth() + 1).toString().padStart(2, "0") + "-"
+  const D = date.getDate().toString().padStart(2, "0") + " "
+  const h = date.getHours().toString().padStart(2, "0") + ":"
+  const m = date.getMinutes().toString().padStart(2, "0") + ":"
+  const s = date.getSeconds().toString().padStart(2, "0")
+  return Y + M + D + h + m + s
+}
+
+```
+
+
+
+## 13.得到某年某月的天数
+
+```typescript
+const getDays = (year: number, month: number) => {
+    const start = new Date(year, month - 1, 1)
+    const end = new Date(year, month, 1)
+    const days = timeDay.count(start, end)
+    return days
+  }
+```
+
