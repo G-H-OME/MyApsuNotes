@@ -487,3 +487,25 @@ export const timeStampFormat = (timestamp: string) => {
 }
 ```
 
+
+
+## 15.JS打开新的tab
+
+```typescript
+window.open(strUrl,strWindowName,[strWindowFeatures]);
+```
+
+- strUrl: 新窗口需要载入的url地址。
+- strWindowName：新窗口的名字，通过这个名字我们可以获得新窗口的引用，容易重复，==如果我们希望每次打开新窗口都是一个全新的窗口，可以设置成关键字 “_blank”。==
+- strWindowFeatures：新窗口的一些设置，比如是否显示菜单栏，是否可以滚动和缩放窗口大小等。
+
+除了将窗口的名字设置为关键字 “_blank”，还可以在窗口设置中（即第三个位置）加入==location=no==，也可以达到打开全新窗口的目的。
+
+**特殊**：当将窗口名字设置为关键字“_blank”时，需要有输入窗口设置，否则还是不会弹出全新独立窗口
+
+
+
+
+
+
+
