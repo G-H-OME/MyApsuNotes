@@ -505,7 +505,12 @@ window.open(strUrl,strWindowName,[strWindowFeatures]);
 
 
 
+## 16.使用console.time进行时间计算
 
+这种方法在需要测试的开始位置写上`console.time`，并且括号内传一个字符串。在结束的位置使用`console.timeEnd`方法，并再次把字符串传入。
 
-
-
+```typescript
+console.time("funTime")
+fun()
+console.timeEnd("funTime")
+```
