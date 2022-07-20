@@ -514,3 +514,19 @@ console.time("funTime")
 fun()
 console.timeEnd("funTime")
 ```
+
+## 17.手动useQuery
+
+常见的useQuery是这样
+
+```typescript
+const [{data:moumouData,fetching}] = useMoumouQuery()
+```
+
+在进入页面的时候进行查询。而想要实现 在特定条件触发下来执行的话需要给他赋予一个方法名，在需要的时候调用它。
+
+```typescript
+const [{data:moumouData},execute] = useMoumouQuery({pause:true})
+```
+
+其中`execute`就是给它起的方法名。`pause:true`可以让它刚进入页面时的自动查询关闭，这样刚进入页面就不会进行查询。
