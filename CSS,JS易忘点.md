@@ -530,3 +530,35 @@ const [{data:moumouData},execute] = useMoumouQuery({pause:true})
 ```
 
 其中`execute`就是给它起的方法名。`pause:true`可以让它刚进入页面时的自动查询关闭，这样刚进入页面就不会进行查询。
+
+## 18.上传文件
+
+两种方法，
+
+一种使用原生的input标签自带type：
+
+```typescript
+<input type='file' />
+//可以通过使用label，将其和其他元素包在一起，将input隐藏，这样就能做到点击其他元素来上传文件
+<label>
+	<div>hallo</div>
+	<input type='file' style={{display:'none'}} />
+</label>
+```
+
+另一种使用react-dropzone：
+
+```typescript
+yarn add react-dropzone
+import {useDropzone} from 'react-dropzone'
+const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
+<div {...getRootProps()}>
+  <input {...getInputProps()} />
+  {
+    isDragActive ?
+      <p>Drop the files here ...</p> :
+      <p>Drag 'n' drop some files here, or click to select files</p>
+  }
+</div>
+```
+
