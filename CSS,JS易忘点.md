@@ -562,3 +562,14 @@ const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
 </div>
 ```
 
+
+
+## 去除字符串中前后的空格
+
+使用字符串的**trim**函数。
+
+```typescript
+' ww ww '.trim()
+//得到结果''
+```
+
