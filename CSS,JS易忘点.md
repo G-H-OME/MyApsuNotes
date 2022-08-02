@@ -564,7 +564,7 @@ const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
 
 
 
-## 去除字符串中前后的空格
+## 19.去除字符串中前后的空格
 
 使用字符串的**trim**函数。
 
@@ -573,3 +573,21 @@ const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
 //得到结果''
 ```
 
+## 20.得到将number数组的元素相加的结果
+
+这里需要一个js的内置对象：**eval( )**
+
+它的作用：`eval()` 函数会将传入的字符串当做 JavaScript 代码进行执行。
+
+```typescript
+eval('1+1') //就会得到2
+```
+
+利用这一点，我们将number数组中的`“，”`全部换成`“+”`，join成字符串，再用这个对象就可以了
+
+```typescript
+const a = [1,2,3]
+const b = eval(a.join("+"))
+```
+
+得到 b = 6
