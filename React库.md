@@ -1,5 +1,3 @@
-# React库库
-
 # React-force-graph-2d
 
 先建立一个.js(.ts)文件导入`reactForceGraph2d`：
@@ -349,12 +347,6 @@ return (
 
 
 
-
-
-
-
-
-
 我做的第一个效果是当滚动轴到达某一位置时，做一个信息由一点炸开展示的特效。
 
 那么首先先要监听window。在react中，要监听到window对象的话，可以在useEffect中，我是这么选择的。
@@ -367,4 +359,55 @@ useEffect(() => {
   })
 ```
 
-这样可以拿到滚动轴距离顶部的距离。就有了触发动效的点了，接下来只要写好动效就可以了。
+这样可以拿到滚动轴距离顶部的距离。就有了触发动效的点了，接下来只要写好动效就可以了。这边我用的是useTransition。
+
+```react
+const [items, setItems] = useState<{ x: number, y: number, delay: number, label: string }[]>( [] )
+
+  const transition = useTransition( items, {
+    from: { x: widthRef.current / 2 - 25, y: heightRef.current / 2 - 25, opacity: 0 },
+    enter: ( item ) => ( next ) => (
+      next( { x: item.x, y: item.y, opacity: 1, delay: item.delay } )
+    ),
+    leave: { x: widthRef.current / 2 - 25, y: heightRef.current / 2 - 25, opacity: 0 }
+  } )
+```
+
+```react
+<div>
+      {transition( ( style, item ) =>
+        item ? (
+     	<animated.div style={{ ...style, height: 151, width: 323.35, position: 'absolute', backdropFilter: 'blur(4px)', backgroundRepeat: 'no-repeat', margin: '4px', background: 'rgba(255, 255, 255, 0.4)', border: '0.4px solid rgba(255, 255, 255, 0.8)', borderRadius: '4px', fontSize: '24px', justifyContent: 'center', alignItems: 'center', display: 'flex', wordWrap: 'break-word', wordBreak: 'break-all' }} ><P>{item.label}</P>							</animated.div>
+		): ''
+      )}
+</div>
+```
+
+这里写个我们设置item的例子，是这样，只要修改了item，那么animated.div里的数据就会变化了
+
+```react
+if ( scrollRef.current > 1650 && scrollRef.current < 2550 ) {//监听的滚动轴的位移
+          if ( state === false ) {//默认是false，关闭状态 在这个if中会把他设置为true 打开状态
+            widthRef.current = Ref.current?.offsetWidth
+            heightRef.current = Ref.current?.offsetHeight
+            setItems( v => v.length ? [] : [
+              { x: 20, y: 15, delay: 200, label: '标题1' },
+              { x: widthRef.current / 2 - 161, y: 15, delay: 300, label: '标题2' },
+              { x: widthRef.current - 365, y: 15, delay: 400, label: '标题3' },
+              { x: 20, y: heightRef.current / 2 - 80, delay: 200, label: '标题4' },
+              { x: widthRef.current / 2 - 161, y: heightRef.current / 2 - 80, delay: 100, label: '标题5' },
+              { x: widthRef.current - 365, y: heightRef.current / 2 - 80, delay: 400, label: '标题6' },
+              { x: 20, y: heightRef.current - 170, delay: 400, label: '标题7' },
+              { x: widthRef.current / 2 - 161, y: heightRef.current - 170, delay: 500, label: '标题8' },
+              { x: widthRef.current - 365, y: heightRef.current - 170, delay: 400, label: '标题9' },
+            ] )
+            state = true  //这里将状态设置为打开状态，这样离开这个范围的时候就会触发else
+          }
+        } else {
+          if ( state === true ) {//离开范围时执行，将item设置为[]
+            setItems( [] )
+            state = false
+          }
+        }
+```
+
